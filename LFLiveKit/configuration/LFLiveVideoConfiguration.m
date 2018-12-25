@@ -15,7 +15,19 @@
 #pragma mark -- LifeCycle
 
 + (instancetype)defaultConfiguration {
-    LFLiveVideoConfiguration *configuration = [LFLiveVideoConfiguration defaultConfigurationForQuality:LFLiveVideoQuality_Default];
+    LFLiveVideoConfiguration *videoConfiguration = [LFLiveVideoConfiguration defaultConfigurationForQuality:LFLiveVideoQuality_Default];
+    videoConfiguration.sessionPreset = LFCaptureSessionPreset540x960;
+    videoConfiguration.videoSize = CGSizeMake(640, 480);
+    videoConfiguration.videoFrameRate = 30;
+    videoConfiguration.videoMaxFrameRate = 30;
+    videoConfiguration.videoMinFrameRate = 10;
+    videoConfiguration.videoBitRate = 600 * 1000;
+    videoConfiguration.videoMaxBitRate = 1440 * 1000;
+    videoConfiguration.videoMinBitRate = 400 * 1000;
+    videoConfiguration.videoMaxKeyframeInterval = videoConfiguration.videoFrameRate*2;
+    videoConfiguration.videoSizeRespectingAspectRatio = YES;
+    videoConfiguration.autorotate = NO;
+    videoConfiguration.outputImageOrientation = UIInterfaceOrientationPortrait;
     return configuration;
 }
 
