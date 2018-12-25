@@ -23,7 +23,7 @@
     switch (audioQuality) {
     case LFLiveAudioQuality_Low: {
         audioConfig.audioBitrate = audioConfig.numberOfChannels == 1 ? LFLiveAudioBitRate_32Kbps : LFLiveAudioBitRate_64Kbps;
-        audioConfig.audioSampleRate = LFLiveAudioSampleRate_16000Hz;
+        audioConfig.audioSampleRate = LFLiveAudioSampleRate_44100Hz;
     }
         break;
     case LFLiveAudioQuality_Medium: {
@@ -38,7 +38,7 @@
         break;
     case LFLiveAudioQuality_VeryHigh: {
         audioConfig.audioBitrate = LFLiveAudioBitRate_128Kbps;
-        audioConfig.audioSampleRate = LFLiveAudioSampleRate_48000Hz;
+        audioConfig.audioSampleRate = LFLiveAudioSampleRate_44100Hz;
     }
         break;
     default:{
