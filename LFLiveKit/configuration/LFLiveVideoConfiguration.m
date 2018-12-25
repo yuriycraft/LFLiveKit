@@ -28,7 +28,7 @@
     videoConfiguration.videoSizeRespectingAspectRatio = YES;
     videoConfiguration.autorotate = NO;
     videoConfiguration.outputImageOrientation = UIInterfaceOrientationPortrait;
-    return configuration;
+    return videoConfiguration;
 }
 
 + (instancetype)defaultConfigurationForQuality:(LFLiveVideoQuality)videoQuality {
