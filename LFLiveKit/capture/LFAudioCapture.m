@@ -67,7 +67,7 @@ NSString *const LFAudioComponentFailedToCreateNotification = @"LFAudioComponentF
         AudioStreamBasicDescription desc = {0};
         desc.mSampleRate = _configuration.audioSampleRate;
         desc.mFormatID = kAudioFormatLinearPCM;
-        desc.mFormatFlags = kAudioFormatFlagIsSignedInteger  | kAudioFormatFlagIsPacked;
+        desc.mFormatFlags = kAudioFormatFlagIsSignedInteger | kAudioFormatFlagsNativeEndian | kAudioFormatFlagIsPacked;
         desc.mChannelsPerFrame = (UInt32)_configuration.numberOfChannels;
         desc.mFramesPerPacket = 1;
         desc.mBitsPerChannel = 16;
@@ -77,6 +77,7 @@ NSString *const LFAudioComponentFailedToCreateNotification = @"LFAudioComponentF
         AURenderCallbackStruct cb;
         cb.inputProcRefCon = (__bridge void *)(self);
         cb.inputProc = handleInputBuffer;
+        AudioUnitSetProperty(self.componetInstance, kAudioOutputUnitProperty_EnableIO, kAudioUnitScope_Output, 0, &desc, sizeof(desc));
         AudioUnitSetProperty(self.componetInstance, kAudioUnitProperty_StreamFormat, kAudioUnitScope_Output, 1, &desc, sizeof(desc));
         AudioUnitSetProperty(self.componetInstance, kAudioOutputUnitProperty_SetInputCallback, kAudioUnitScope_Global, 1, &cb, sizeof(cb));
         
@@ -86,7 +87,7 @@ NSString *const LFAudioComponentFailedToCreateNotification = @"LFAudioComponentF
             [self handleAudioComponentCreationFailure];
         }
         
-        [session setPreferredSampleRate:_configuration.audioSampleRate error:nil];
+        [session setPreferredSampleRate:44100.f error:nil];
         [session setCategory:AVAudioSessionCategoryPlayAndRecord withOptions:AVAudioSessionCategoryOptionDefaultToSpeaker | AVAudioSessionCategoryOptionInterruptSpokenAudioAndMixWithOthers error:nil];
         [session setActive:YES withOptions:kAudioSessionSetActiveFlag_NotifyOthersOnDeactivation error:nil];
         
@@ -118,7 +119,7 @@ NSString *const LFAudioComponentFailedToCreateNotification = @"LFAudioComponentF
             self.isRunning = YES;
             NSLog(@"MicrophoneSource: startRunning");
             [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayAndRecord withOptions:AVAudioSessionCategoryOptionDefaultToSpeaker | AVAudioSessionCategoryOptionInterruptSpokenAudioAndMixWithOthers error:nil];
-            [[AVAudioSession sharedInstance] setMode:AVAudioSessionModeVideoChat error:nil];
+            //            [[AVAudioSession sharedInstance] setMode:AVAudioSessionModeVideoChat error:nil];
             [AVAudioSession.sharedInstance setActive:YES withOptions:AVAudioSessionSetActiveOptionNotifyOthersOnDeactivation error:nil];
             AudioOutputUnitStart(self.componetInstance);
         });
