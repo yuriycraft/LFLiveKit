@@ -67,7 +67,7 @@ NSString *const LFAudioComponentFailedToCreateNotification = @"LFAudioComponentF
         AudioStreamBasicDescription desc = {0};
         desc.mSampleRate = _configuration.audioSampleRate;
         desc.mFormatID = kAudioFormatLinearPCM;
-        desc.mFormatFlags = kAudioFormatFlagsNativeFloatPacked;//kAudioFormatFlagIsSignedInteger | kAudioFormatFlagsNativeEndian | kAudioFormatFlagIsPacked;
+        desc.mFormatFlags = kAudioFormatFlagIsSignedInteger | kAudioFormatFlagsNativeEndian | kAudioFormatFlagIsPacked;
         desc.mChannelsPerFrame = (UInt32)_configuration.numberOfChannels;
         desc.mFramesPerPacket = 1;
         desc.mBitsPerChannel = 16;
@@ -77,6 +77,7 @@ NSString *const LFAudioComponentFailedToCreateNotification = @"LFAudioComponentF
         AURenderCallbackStruct cb;
         cb.inputProcRefCon = (__bridge void *)(self);
         cb.inputProc = handleInputBuffer;
+        AudioUnitSetProperty(self.componetInstance, kAudioOutputUnitProperty_EnableIO, kAudioUnitScope_Output, 0, &desc, sizeof(desc));
         AudioUnitSetProperty(self.componetInstance, kAudioUnitProperty_StreamFormat, kAudioUnitScope_Output, 1, &desc, sizeof(desc));
         AudioUnitSetProperty(self.componetInstance, kAudioOutputUnitProperty_SetInputCallback, kAudioUnitScope_Global, 1, &cb, sizeof(cb));
         
@@ -86,9 +87,8 @@ NSString *const LFAudioComponentFailedToCreateNotification = @"LFAudioComponentF
             [self handleAudioComponentCreationFailure];
         }
         
-        [session setPreferredSampleRate:_configuration.audioSampleRate error:nil];
+        [session setPreferredSampleRate:44100.f error:nil];
         [session setCategory:AVAudioSessionCategoryPlayAndRecord withOptions:AVAudioSessionCategoryOptionDefaultToSpeaker | AVAudioSessionCategoryOptionInterruptSpokenAudioAndMixWithOthers error:nil];
-        //      [session setMode:AVAudioSessionModeVoiceChat error:nil];
         [session setActive:YES withOptions:kAudioSessionSetActiveFlag_NotifyOthersOnDeactivation error:nil];
         
         [session setActive:YES error:nil];
@@ -98,7 +98,7 @@ NSString *const LFAudioComponentFailedToCreateNotification = @"LFAudioComponentF
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-
+    
     dispatch_sync(self.taskQueue, ^{
         if (self.componetInstance) {
             self.isRunning = NO;
@@ -119,6 +119,8 @@ NSString *const LFAudioComponentFailedToCreateNotification = @"LFAudioComponentF
             self.isRunning = YES;
             NSLog(@"MicrophoneSource: startRunning");
             [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayAndRecord withOptions:AVAudioSessionCategoryOptionDefaultToSpeaker | AVAudioSessionCategoryOptionInterruptSpokenAudioAndMixWithOthers error:nil];
+            //            [[AVAudioSession sharedInstance] setMode:AVAudioSessionModeVideoChat error:nil];
+            [AVAudioSession.sharedInstance setActive:YES withOptions:AVAudioSessionSetActiveOptionNotifyOthersOnDeactivation error:nil];
             AudioOutputUnitStart(self.componetInstance);
         });
     } else {
@@ -144,34 +146,34 @@ NSString *const LFAudioComponentFailedToCreateNotification = @"LFAudioComponentF
     NSInteger reason = [[[notification userInfo] objectForKey:AVAudioSessionRouteChangeReasonKey] integerValue];
     //  AVAudioSessionRouteDescription* prevRoute = [[notification userInfo] objectForKey:AVAudioSessionRouteChangePreviousRouteKey];
     switch (reason) {
-    case AVAudioSessionRouteChangeReasonNoSuitableRouteForCategory:
-        seccReason = @"The route changed because no suitable route is now available for the specified category.";
-        break;
-    case AVAudioSessionRouteChangeReasonWakeFromSleep:
-        seccReason = @"The route changed when the device woke up from sleep.";
-        break;
-    case AVAudioSessionRouteChangeReasonOverride:
-        seccReason = @"The output route was overridden by the app.";
-        break;
-    case AVAudioSessionRouteChangeReasonCategoryChange:
-        seccReason = @"The category of the session object changed.";
-        break;
-    case AVAudioSessionRouteChangeReasonOldDeviceUnavailable:
-        seccReason = @"The previous audio output path is no longer available.";
-        break;
-    case AVAudioSessionRouteChangeReasonNewDeviceAvailable:
-        seccReason = @"A preferred new audio output path is now available.";
-        break;
-    case AVAudioSessionRouteChangeReasonUnknown:
-    default:
-        seccReason = @"The reason for the change is unknown.";
-        break;
+        case AVAudioSessionRouteChangeReasonNoSuitableRouteForCategory:
+            seccReason = @"The route changed because no suitable route is now available for the specified category.";
+            break;
+        case AVAudioSessionRouteChangeReasonWakeFromSleep:
+            seccReason = @"The route changed when the device woke up from sleep.";
+            break;
+        case AVAudioSessionRouteChangeReasonOverride:
+            seccReason = @"The output route was overridden by the app.";
+            break;
+        case AVAudioSessionRouteChangeReasonCategoryChange:
+            seccReason = @"The category of the session object changed.";
+            break;
+        case AVAudioSessionRouteChangeReasonOldDeviceUnavailable:
+            seccReason = @"The previous audio output path is no longer available.";
+            break;
+        case AVAudioSessionRouteChangeReasonNewDeviceAvailable:
+            seccReason = @"A preferred new audio output path is now available.";
+            break;
+        case AVAudioSessionRouteChangeReasonUnknown:
+        default:
+            seccReason = @"The reason for the change is unknown.";
+            break;
     }
     NSLog(@"handleRouteChange reason is %@", seccReason);
-
+    
     AVAudioSessionPortDescription *input = [[session.currentRoute.inputs count] ? session.currentRoute.inputs : nil objectAtIndex:0];
     if (input.portType == AVAudioSessionPortHeadsetMic) {
-
+        
     }
 }
 
@@ -189,25 +191,25 @@ NSString *const LFAudioComponentFailedToCreateNotification = @"LFAudioComponentF
                 });
             }
         }
-
+        
         if (reason == AVAudioSessionInterruptionTypeEnded) {
             reasonStr = @"AVAudioSessionInterruptionTypeEnded";
             NSNumber *seccondReason = [[notification userInfo] objectForKey:AVAudioSessionInterruptionOptionKey];
             switch ([seccondReason integerValue]) {
-            case AVAudioSessionInterruptionOptionShouldResume:
-                if (self.isRunning) {
-                    dispatch_async(self.taskQueue, ^{
-                        NSLog(@"MicrophoneSource: startRunning");
-                        AudioOutputUnitStart(self.componetInstance);
-                    });
-                }
-                // Indicates that the audio session is active and immediately ready to be used. Your app can resume the audio operation that was interrupted.
-                break;
-            default:
-                break;
+                case AVAudioSessionInterruptionOptionShouldResume:
+                    if (self.isRunning) {
+                        dispatch_async(self.taskQueue, ^{
+                            NSLog(@"MicrophoneSource: startRunning");
+                            AudioOutputUnitStart(self.componetInstance);
+                        });
+                    }
+                    // Indicates that the audio session is active and immediately ready to be used. Your app can resume the audio operation that was interrupted.
+                    break;
+                default:
+                    break;
             }
         }
-
+        
     }
     ;
     NSLog(@"handleInterruption: %@ reason %@", [notification name], reasonStr);
@@ -223,30 +225,30 @@ static OSStatus handleInputBuffer(void *inRefCon,
     @autoreleasepool {
         LFAudioCapture *source = (__bridge LFAudioCapture *)inRefCon;
         if (!source) return -1;
-
+        
         AudioBuffer buffer;
         buffer.mData = NULL;
         buffer.mDataByteSize = 0;
         buffer.mNumberChannels = 1;
-
+        
         AudioBufferList buffers;
         buffers.mNumberBuffers = 1;
         buffers.mBuffers[0] = buffer;
-
+        
         OSStatus status = AudioUnitRender(source.componetInstance,
                                           ioActionFlags,
                                           inTimeStamp,
                                           inBusNumber,
                                           inNumberFrames,
                                           &buffers);
-
+        
         if (source.muted) {
             for (int i = 0; i < buffers.mNumberBuffers; i++) {
                 AudioBuffer ab = buffers.mBuffers[i];
                 memset(ab.mData, 0, ab.mDataByteSize);
             }
         }
-
+        
         if (!status) {
             if (source.delegate && [source.delegate respondsToSelector:@selector(captureOutput:audioData:)]) {
                 [source.delegate captureOutput:source audioData:[NSData dataWithBytes:buffers.mBuffers[0].mData length:buffers.mBuffers[0].mDataByteSize]];
