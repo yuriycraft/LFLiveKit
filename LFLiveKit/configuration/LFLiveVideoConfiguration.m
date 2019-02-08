@@ -17,7 +17,7 @@
 + (instancetype)defaultConfiguration {
     LFLiveVideoConfiguration *videoConfiguration = [LFLiveVideoConfiguration defaultConfigurationForQuality:LFLiveVideoQuality_Default];
     videoConfiguration.sessionPreset = LFCaptureSessionPreset540x960;
-    videoConfiguration.videoSize = CGSizeMake(640, 480);
+    videoConfiguration.videoSize = CGSizeMake(480, 640);
     videoConfiguration.videoFrameRate = 30;
     videoConfiguration.videoMaxFrameRate = 30;
     videoConfiguration.videoMinFrameRate = 10;
@@ -47,7 +47,7 @@
         configuration.videoBitRate = 500 * 1000;
         configuration.videoMaxBitRate = 600 * 1000;
         configuration.videoMinBitRate = 400 * 1000;
-        configuration.videoSize = CGSizeMake(360, 640);
+        configuration.videoSize = CGSizeMake(480, 640);
     }
         break;
     case LFLiveVideoQuality_Low2:{
@@ -58,7 +58,7 @@
         configuration.videoBitRate = 600 * 1000;
         configuration.videoMaxBitRate = 720 * 1000;
         configuration.videoMinBitRate = 500 * 1000;
-        configuration.videoSize = CGSizeMake(360, 640);
+        configuration.videoSize = CGSizeMake(480, 640);
     }
         break;
     case LFLiveVideoQuality_Low3: {
@@ -69,7 +69,7 @@
         configuration.videoBitRate = 800 * 1000;
         configuration.videoMaxBitRate = 960 * 1000;
         configuration.videoMinBitRate = 600 * 1000;
-        configuration.videoSize = CGSizeMake(360, 640);
+        configuration.videoSize = CGSizeMake(480, 640);
     }
         break;
     case LFLiveVideoQuality_Medium1:{
@@ -247,7 +247,7 @@
     CGSize videoSize = CGSizeZero;
     switch (_sessionPreset) {
         case LFCaptureSessionPreset360x640:{
-            videoSize = CGSizeMake(360, 640);
+            videoSize = CGSizeMake(480, 640);
         }
             break;
         case LFCaptureSessionPreset540x960:{
@@ -260,7 +260,7 @@
             break;
             
         default:{
-            videoSize = CGSizeMake(360, 640);
+            videoSize = CGSizeMake(480, 640);
         }
             break;
     }
