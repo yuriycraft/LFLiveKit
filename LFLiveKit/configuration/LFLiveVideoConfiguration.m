@@ -16,14 +16,14 @@
 
 + (instancetype)defaultConfiguration {
     LFLiveVideoConfiguration *videoConfiguration = [LFLiveVideoConfiguration defaultConfigurationForQuality:LFLiveVideoQuality_Default];
-    videoConfiguration.sessionPreset = LFCaptureSessionPreset540x960;
+    videoConfiguration.sessionPreset = LFCaptureSessionPreset360x640 ;
     videoConfiguration.videoSize = CGSizeMake(480, 640);
-    videoConfiguration.videoFrameRate = 30;
-    videoConfiguration.videoMaxFrameRate = 30;
+    videoConfiguration.videoFrameRate = 25;
+    videoConfiguration.videoMaxFrameRate = 29;
     videoConfiguration.videoMinFrameRate = 10;
-    videoConfiguration.videoBitRate = 600 * 1000;
-    videoConfiguration.videoMaxBitRate = 1440 * 1000;
-    videoConfiguration.videoMinBitRate = 400 * 1000;
+    videoConfiguration.videoBitRate = 400 * 1000;
+    videoConfiguration.videoMaxBitRate = 1000 * 1000;
+    videoConfiguration.videoMinBitRate = 100 * 1000;
     videoConfiguration.videoMaxKeyframeInterval = videoConfiguration.videoFrameRate*2;
     videoConfiguration.videoSizeRespectingAspectRatio = YES;
     videoConfiguration.autorotate = NO;
