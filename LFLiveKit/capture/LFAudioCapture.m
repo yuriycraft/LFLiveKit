@@ -87,7 +87,7 @@ NSString *const LFAudioComponentFailedToCreateNotification = @"LFAudioComponentF
             [self handleAudioComponentCreationFailure];
         }
         
-        [session setPreferredSampleRate:44100.f error:nil];
+        [session setPreferredSampleRate:_configuration.audioSampleRate error:nil];
         [session setCategory:AVAudioSessionCategoryPlayAndRecord withOptions:AVAudioSessionCategoryOptionDefaultToSpeaker | AVAudioSessionCategoryOptionInterruptSpokenAudioAndMixWithOthers error:nil];
         [session setActive:YES withOptions:kAudioSessionSetActiveFlag_NotifyOthersOnDeactivation error:nil];
         
@@ -119,7 +119,6 @@ NSString *const LFAudioComponentFailedToCreateNotification = @"LFAudioComponentF
             self.isRunning = YES;
             NSLog(@"MicrophoneSource: startRunning");
             [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayAndRecord withOptions:AVAudioSessionCategoryOptionDefaultToSpeaker | AVAudioSessionCategoryOptionInterruptSpokenAudioAndMixWithOthers error:nil];
-            //            [[AVAudioSession sharedInstance] setMode:AVAudioSessionModeVideoChat error:nil];
             [AVAudioSession.sharedInstance setActive:YES withOptions:AVAudioSessionSetActiveOptionNotifyOthersOnDeactivation error:nil];
             AudioOutputUnitStart(self.componetInstance);
         });
