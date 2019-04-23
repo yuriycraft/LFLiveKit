@@ -11,7 +11,7 @@
 @implementation LFLiveDebug
 
 - (NSString *)description {
-    return [NSString stringWithFormat:@"dropFrame: %ld\ntotalFrame: %ld\nNumber of frames lost: %ld\nTotal traffic: %0.f\nBitrate:%lu\nCurrent Bandwidth: %f",(long)_dropFrame,(long)_totalFrame,(long)_unSendCount,_dataFlow , (unsigned long)_bitrate, _currentBandwidth];
+    return [NSString stringWithFormat:@"Bitrate: %ld. \nCurrent Bandwidth: %f \nNumber of frames lost: %ld \nTotal frames: %ld \nNumber of last audio captures: %ld Number of last video captures: %ld \nNumber of unsent: %ld \nTotal traffic:%0.f",(long)_bitrate / 1024, _currentBandwidth,(long)_dropFrame,(long)_totalFrame,(long)_currentCapturedAudioCount,(long)_currentCapturedVideoCount,(long)_unSendCount,_dataFlow];
 }
 
 

@@ -85,7 +85,6 @@
         _videoConfiguration = videoConfiguration;
         _adaptiveBitrate = NO;
         _captureType = captureType;
-        
     }
     return self;
 }
@@ -188,12 +187,11 @@
 
 - (void)socketDebug:(nullable id<LFStreamSocket>)socket debugInfo:(nullable LFLiveDebug *)debugInfo {
     self.debugInfo = debugInfo;
-    NSUInteger videoBitRate = [self.videoEncoder videoBitRate];
-    self.debugInfo.bitrate = videoBitRate == 0 ? _videoConfiguration.videoBitRate : videoBitRate;
+    self.debugInfo.bitrate = self.videoEncoder.videoBitRate;
     if (self.showDebugInfo) {
         dispatch_async(dispatch_get_main_queue(), ^{
             if (self.delegate && [self.delegate respondsToSelector:@selector(liveSession:debugInfo:)]) {
-                [self.delegate liveSession:self debugInfo:self.debugInfo];
+                [self.delegate liveSession:self debugInfo:debugInfo];
             }
         });
     }
@@ -202,7 +200,6 @@
 - (void)socketBufferStatus:(nullable id<LFStreamSocket>)socket status:(LFLiveBuffferState)status {
     if((self.captureType & LFLiveCaptureMaskVideo || self.captureType & LFLiveInputMaskVideo) && self.adaptiveBitrate){
         NSUInteger videoBitRate = [self.videoEncoder videoBitRate];
-        
         if (status == LFLiveBuffferDecline) {
             if (videoBitRate < _videoConfiguration.videoMaxBitRate) {
                 videoBitRate = videoBitRate + 50 * 1000;
@@ -214,10 +211,16 @@
                 videoBitRate = videoBitRate - 100 * 1000;
                 [self.videoEncoder setVideoBitRate:videoBitRate];
                 NSLog(@"Decline bitrate %@", @(videoBitRate));
-                
             }
         }
-        self.debugInfo.bitrate = videoBitRate == 0 ? _videoConfiguration.videoBitRate : videoBitRate;
+        self.debugInfo.bitrate = self.videoEncoder.videoBitRate;
+        if (self.showDebugInfo) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (self.delegate && [self.delegate respondsToSelector:@selector(liveSession:debugInfo:)]) {
+                    [self.delegate liveSession:self debugInfo: self.debugInfo];
+                }
+            });
+        }
     }
 }
 

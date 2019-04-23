@@ -22,6 +22,7 @@
 @property (nonatomic, assign) CGFloat bandwidth;                        ///< 1s内总带宽
 @property (nonatomic, assign) CGFloat currentBandwidth;                 ///< 上次的带宽
 
+@property (nonatomic, assign) NSInteger bitrate;
 @property (nonatomic, assign) NSInteger dropFrame;                      ///< 丢掉的帧数
 @property (nonatomic, assign) NSInteger totalFrame;                     ///< 总帧数
 
@@ -29,7 +30,7 @@
 @property (nonatomic, assign) NSInteger capturedVideoCount;             ///< 1s内视频捕获个数
 @property (nonatomic, assign) NSInteger currentCapturedAudioCount;      ///< 上次的音频捕获个数
 @property (nonatomic, assign) NSInteger currentCapturedVideoCount;      ///< 上次的视频捕获个数
-@property (nonatomic, assign) NSUInteger bitrate;
+
 @property (nonatomic, assign) NSInteger unSendCount;                    ///< 未发送个数（代表当前缓冲区等待发送的）
 
 @end
