@@ -21,33 +21,33 @@
     LFLiveAudioConfiguration *audioConfig = [LFLiveAudioConfiguration new];
     audioConfig.numberOfChannels = 2;
     switch (audioQuality) {
-    case LFLiveAudioQuality_Low: {
-        audioConfig.audioBitrate = audioConfig.numberOfChannels == 1 ? LFLiveAudioBitRate_32Kbps : LFLiveAudioBitRate_64Kbps;
-        audioConfig.audioSampleRate = LFLiveAudioSampleRate_44100Hz;
+        case LFLiveAudioQuality_Low: {
+            audioConfig.audioBitrate = audioConfig.numberOfChannels == 1 ? LFLiveAudioBitRate_32Kbps : LFLiveAudioBitRate_64Kbps;
+            audioConfig.audioSampleRate = LFLiveAudioSampleRate_44100Hz;
+        }
+            break;
+        case LFLiveAudioQuality_Medium: {
+            audioConfig.audioBitrate = LFLiveAudioBitRate_96Kbps;
+            audioConfig.audioSampleRate = LFLiveAudioSampleRate_44100Hz;
+        }
+            break;
+        case LFLiveAudioQuality_High: {
+            audioConfig.audioBitrate = LFLiveAudioBitRate_128Kbps;
+            audioConfig.audioSampleRate = LFLiveAudioSampleRate_44100Hz;
+        }
+            break;
+        case LFLiveAudioQuality_VeryHigh: {
+            audioConfig.audioBitrate = LFLiveAudioBitRate_128Kbps;
+            audioConfig.audioSampleRate = LFLiveAudioSampleRate_44100Hz;
+        }
+            break;
+        default:{
+            audioConfig.audioBitrate = LFLiveAudioBitRate_96Kbps;
+            audioConfig.audioSampleRate = LFLiveAudioSampleRate_44100Hz;
+        }
+            break;
     }
-        break;
-    case LFLiveAudioQuality_Medium: {
-        audioConfig.audioBitrate = LFLiveAudioBitRate_96Kbps;
-        audioConfig.audioSampleRate = LFLiveAudioSampleRate_44100Hz;
-    }
-        break;
-    case LFLiveAudioQuality_High: {
-        audioConfig.audioBitrate = LFLiveAudioBitRate_128Kbps;
-        audioConfig.audioSampleRate = LFLiveAudioSampleRate_44100Hz;
-    }
-        break;
-    case LFLiveAudioQuality_VeryHigh: {
-        audioConfig.audioBitrate = LFLiveAudioBitRate_128Kbps;
-        audioConfig.audioSampleRate = LFLiveAudioSampleRate_44100Hz;
-    }
-        break;
-    default:{
-        audioConfig.audioBitrate = LFLiveAudioBitRate_96Kbps;
-        audioConfig.audioSampleRate = LFLiveAudioSampleRate_44100Hz;
-    }
-        break;
-    }
-
+    
     return audioConfig;
 }
 
@@ -85,47 +85,47 @@
 - (NSInteger)sampleRateIndex:(NSInteger)frequencyInHz {
     NSInteger sampleRateIndex = 0;
     switch (frequencyInHz) {
-    case 96000:
-        sampleRateIndex = 0;
-        break;
-    case 88200:
-        sampleRateIndex = 1;
-        break;
-    case 64000:
-        sampleRateIndex = 2;
-        break;
-    case 48000:
-        sampleRateIndex = 3;
-        break;
-    case 44100:
-        sampleRateIndex = 4;
-        break;
-    case 32000:
-        sampleRateIndex = 5;
-        break;
-    case 24000:
-        sampleRateIndex = 6;
-        break;
-    case 22050:
-        sampleRateIndex = 7;
-        break;
-    case 16000:
-        sampleRateIndex = 8;
-        break;
-    case 12000:
-        sampleRateIndex = 9;
-        break;
-    case 11025:
-        sampleRateIndex = 10;
-        break;
-    case 8000:
-        sampleRateIndex = 11;
-        break;
-    case 7350:
-        sampleRateIndex = 12;
-        break;
-    default:
-        sampleRateIndex = 15;
+        case 96000:
+            sampleRateIndex = 0;
+            break;
+        case 88200:
+            sampleRateIndex = 1;
+            break;
+        case 64000:
+            sampleRateIndex = 2;
+            break;
+        case 48000:
+            sampleRateIndex = 3;
+            break;
+        case 44100:
+            sampleRateIndex = 4;
+            break;
+        case 32000:
+            sampleRateIndex = 5;
+            break;
+        case 24000:
+            sampleRateIndex = 6;
+            break;
+        case 22050:
+            sampleRateIndex = 7;
+            break;
+        case 16000:
+            sampleRateIndex = 8;
+            break;
+        case 12000:
+            sampleRateIndex = 9;
+            break;
+        case 11025:
+            sampleRateIndex = 10;
+            break;
+        case 8000:
+            sampleRateIndex = 11;
+            break;
+        case 7350:
+            sampleRateIndex = 12;
+            break;
+        default:
+            sampleRateIndex = 15;
     }
     return sampleRateIndex;
 }
@@ -155,9 +155,9 @@
     } else {
         LFLiveAudioConfiguration *object = other;
         return object.numberOfChannels == self.numberOfChannels &&
-               object.audioBitrate == self.audioBitrate &&
-               strcmp(object.asc, self.asc) == 0 &&
-               object.audioSampleRate == self.audioSampleRate;
+        object.audioBitrate == self.audioBitrate &&
+        strcmp(object.asc, self.asc) == 0 &&
+        object.audioSampleRate == self.audioSampleRate;
     }
 }
 
@@ -167,7 +167,7 @@
                         @(_audioSampleRate),
                         [NSString stringWithUTF8String:self.asc],
                         @(_audioBitrate)];
-
+    
     for (NSObject *value in values) {
         hash ^= value.hash;
     }
