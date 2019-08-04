@@ -424,7 +424,7 @@
     if((self.captureType & LFLiveCaptureMaskAudio || self.captureType & LFLiveInputMaskAudio) &&
        (self.captureType & LFLiveCaptureMaskVideo || self.captureType & LFLiveInputMaskVideo)
        ){
-        if(self.hasCaptureAudio && self.hasKeyFrameVideo) return YES;
+        if(self.hasCaptureAudio || self.hasKeyFrameVideo) return YES;
         else  return NO;
     }else{
         return YES;
